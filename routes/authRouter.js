@@ -21,7 +21,6 @@ router.post("/login", async (req, res) => {
 
     if (error.userName || error.password) {
         error.color = "red";
-        error['password']=await bcrypt.hash(password,10)
         return res.status(400).json(error);
     }
 
