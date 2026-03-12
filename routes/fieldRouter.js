@@ -35,9 +35,10 @@ Object.keys(bod).forEach(v => {
     return res.status(403).json(error)
 }else{
 try {
+      const user_id = req.userData.id;
     const timestamp = Date.now();
     const Tracking_Id=name.substring(0,3)+timestamp
-      const[inp]=await db.query(`INSERT INTO field(name,email,address,phone,date,Tracking_Id) VALUES(?,?,?,?,?,?)`,[name,email,address,phone,date,Tracking_Id])
+      const[inp]=await db.query(`INSERT INTO field(user_id,name,email,address,phone,date,Tracking_Id) VALUES(?,?,?,?,?,?,?)`,[user_id,name,email,address,phone,date,Tracking_Id])
     return res.status(200).json({'message':"Field Created Successfully",'color':'blue'})
 
 } catch (error) {
@@ -46,6 +47,10 @@ try {
 }  
 }
  
+})
+
+router.get("/get",AuthMiddleware,async(req,res)=>{
+    const [get]=await db.query(`SELECT * FROM field WHERE`)
 })
 
 
