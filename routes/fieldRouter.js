@@ -50,7 +50,9 @@ try {
 })
 
 router.get("/get",AuthMiddleware,async(req,res)=>{
-    const [get]=await db.query(`SELECT * FROM field WHERE`)
+    const user_id = req.userData.id;
+    const [get]=await db.query(`SELECT * FROM field WHERE user_id=?`,[user_id]);
+    return res.status(200).json(get)
 })
 
 
