@@ -84,6 +84,7 @@ export default async function migrate() {
   );
 
   console.log(`✔️  Migrated: ${file}\n`);
+   process.exit(1);
 }
 
 

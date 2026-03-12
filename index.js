@@ -4,10 +4,11 @@ import cors from 'cors'
 import cookieParser from "cookie-parser";
 import authRouter from './routes/authRouter.js'
 import fieldRouter from './routes/fieldRouter.js'
+import agentRouter from './routes/agentRouter.js'
 const port=process.env.PORT
 const app=express();
 
-
+//http://localhost:3000
 
 app.use(express.json())
 app.use(cookieParser())
@@ -18,7 +19,8 @@ app.use(cors({
 
 
 app.use("/api/auth/",authRouter);
-app.use("/api/field/",fieldRouter)
+app.use("/api/field/",fieldRouter);
+app.use("/api/agent/",agentRouter);
 
 
 app.listen(port,()=>{

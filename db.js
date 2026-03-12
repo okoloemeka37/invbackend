@@ -1,13 +1,14 @@
 import mysql from 'mysql2/promise';
 
-const DB_NAME ='b8gnxtlgiy61lcjlezzh';
-
-/*  const baseConfig = {
+const DB_NAME ='b8gnxtlgiy61lcjlezzh' //'INV'//;
+/* 
+ const baseConfig = {
   host: 'localhost',
   user: 'root',
   password: '',
-}; 
- */
+}
+   */
+
  const baseConfig = {
   host: 'b8gnxtlgiy61lcjlezzh-mysql.services.clever-cloud.com',
   user: 'u9qyighrpu9qxsms',
