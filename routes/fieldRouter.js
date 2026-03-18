@@ -55,5 +55,11 @@ router.get("/get",AuthMiddleware,async(req,res)=>{
     return res.status(200).json(get)
 })
 
+router.get("/getSingF",AuthMiddleware, async (req,res)=>{
+  const {id}=req.query
+  const[get]=await db.query(`SELECT * FROM field WHERE id=?`,[id]);
+  //const [agt]= await db.query(`SELECT * FROM fToA WHERE id=?`,[id]);
+   return res.status(200).json(get)
+})
 
 export default router;
