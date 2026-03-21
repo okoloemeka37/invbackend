@@ -9,12 +9,12 @@ import parameterRouter from './routes/parameterRouter.js'
 const port=process.env.PORT
 const app=express();
 
-//https://client-95np.onrender.com
+//http://localhost:3000
 
 app.use(express.json())
 app.use(cookieParser())
 app.use(cors({
-     origin:"http://localhost:3000",
+     origin:"https://client-95np.onrender.com",
      credentials:true
 }))
 
