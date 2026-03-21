@@ -56,10 +56,42 @@ router.get("/get",AuthMiddleware,async(req,res)=>{
 })
 
 router.get("/getSingF",AuthMiddleware, async (req,res)=>{
+   const user_id = req.userData.id;
   const {id}=req.query
-  const[get]=await db.query(`SELECT * FROM field WHERE id=?`,[id]);
+  const query=``;
+  const[field]=await db.query(`SELECT field.*,GROUP_CONCAT(ftoa.agentId) AS agents FROM field LEFT JOIN ftoa ON field.id = ftoa.fieldId WHERE field.id = ? GROUP BY field.id;`,[id]);
+  const [agents]=await db.query(`SELECT name, agentId FROM agents WHERE userId=?`,[user_id]);
   //const [agt]= await db.query(`SELECT * FROM fToA WHERE id=?`,[id]);
-   return res.status(200).json(get)
+   return res.status(200).json({field,agents})
 })
+
+
+router.post("/setAgent",AuthMiddleware, async(req,res)=>{
+  const {agentId,fieldId}=req.body;
+   const user_id = req.userData.id;
+
+   try {
+     const [p]=await db.query(`INSERT INTO ftoa(userId,agentId,fieldId) VALUES(?,?,?)`,[user_id,agentId,fieldId]);
+    return res.status(200).json({'message':"Agent Added to Field Successfully",'color':'blue'})
+
+  } catch (error) {
+    console.log(error)
+    //return res.status(error.status).json(error);
+  } 
+})
+
+router.post("/removeAgent",AuthMiddleware, async(req,res)=>{
+  const {agentId,fieldId}=req.body;
+
+   try {
+     const [p]=await db.query(`DELETE FROM ftoa WHERE agentId=? AND fieldId=?`,[agentId,fieldId]);
+    return res.status(200).json({'message':"Agent Remove From Field Successfully",'color':'blue'})
+
+  } catch (error) {
+    console.log(error)
+    //return res.status(error.status).json(error);
+  } 
+})
+
 
 export default router;
