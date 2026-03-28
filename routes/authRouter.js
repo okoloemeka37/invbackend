@@ -111,20 +111,13 @@ router.post("/AgentLogin", async (req, res) => {
             return res.status(401).json({message: "Invalid username or passcode"});
         }else{
                 const token = jwt.sign({ id: user.id, userName: user.name,role:user.type},key, { expiresIn: "7d" })                 
-
-                const role=jwt.sign({ id: user.id, userName: user.name,role:user.type},key, { expiresIn: "7d" })
                 res.cookie("token", token, {
                             httpOnly: true,
                             secure: true,
                             sameSite: "none",
                             maxAge:7 * 24 * 60 * 60 * 1000,
                         })
-                res.cookie("role", role, {
-                            httpOnly: true,
-                            secure: true,
-                            sameSite:"none",
-                            maxAge:7 * 24 * 60 * 60 * 1000,
-                        })
+               
         return res.status(200).json({
             message: "Login successful",
             user: user
