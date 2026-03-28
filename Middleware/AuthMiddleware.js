@@ -6,6 +6,7 @@ const key = "1234r";
 export const AuthMiddleware = async (req, res, next) => {
   try {
     const token = req.cookies.token;
+    const role = req.cookies.role;
 
     if (!token) {
       return res.status(401).json({ message: "No token provided" });
@@ -14,14 +15,22 @@ export const AuthMiddleware = async (req, res, next) => {
     // Verify JWT
     const decoded = jwt.verify(token, key);
 
-    // Attach decoded info
-    req.user = decoded;
 
-    // Fetch user from DB using promise
-    const [result] = await db.query(
+let [result]='';
+   if (decoded.role== "Admin") {
+      [result] = await db.query(
       "SELECT id, userName, email FROM users WHERE userName = ?",
       [decoded.userName]
     );
+       
+   }else{
+      [result] = await db.query(
+      "SELECT id, name,type FROM agents WHERE name = ?",
+      [decoded.userName]
+    );
+       
+   }
+
 
     if (result.length === 0) {
       return res.status(404).json({ message: "User not found" });

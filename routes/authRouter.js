@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken"
 const router = express.Router();
 import {AuthMiddleware} from '../Middleware/AuthMiddleware.js'
 router.post("/login", async (req, res) => {
-    const key='1234r'
+    const key=process.env.jsonkey;
 
     const error = { userName: "", password: "" };
     const { userName, password } = req.body;
@@ -44,14 +44,21 @@ router.post("/login", async (req, res) => {
             error.color = "red";
             return res.status(401).json({message: "Invalid username or password"});
         }else{
-                const token = jwt.sign({ id: user.id, userName: user.userName },key, { expiresIn: "1d" })
-
+                const token = jwt.sign({ id: user.id, userName: user.userName,role:user.type},key, { expiresIn: "7d" })
+                const role=jwt.sign({role:user.type},key, { expiresIn: "7d" })
                 res.cookie("token", token, {
-                 httpOnly: true,
-      secure: true,
-      sameSite: "none",
-      maxAge:7 * 24 * 60 * 60 * 1000,
-    })
+                            httpOnly: true,
+                            secure: false,//process.env.NODE_ENV === "production",
+                            sameSite: "lax",
+                            maxAge:7 * 24 * 60 * 60 * 1000,
+                        })
+
+                res.cookie("role", role, {
+                            httpOnly: true,
+                            secure: false,//process.env.NODE_ENV === "production",
+                            sameSite: "lax",
+                            maxAge:7 * 24 * 60 * 60 * 1000,
+                        })
         return res.status(200).json({
             message: "Login successful",
             user: {
@@ -68,19 +75,96 @@ router.post("/login", async (req, res) => {
 });
 
 
+router.post("/AgentLogin", async (req, res) => {
+    const key=process.env.jsonkey;
+
+    const error = { userName: "", password: "" };
+    const { userName, password } = req.body;
+
+    // validation
+    if (!userName || userName.length === 0) {
+        error.userName = "The userName field is required";
+    }
+
+    if (!password || password.length === 0) {
+        error.password = "The passcode field is required";
+    }
+
+    if (error.userName || error.password) {
+        error.color = "red";
+        return res.status(400).json(error);
+    }
+
+    try {
+
+        const [users] = await db.query(
+            "SELECT * FROM agents WHERE name = ?",
+            [userName]
+        );
+
+        if (users.length === 0) {
+            error.color = "red";
+            return res.status(401).json({message: "Invalid userame or passcode" });
+        }
+
+        const user = users[0];
+
+        const match = await bcrypt.compare(password, user.passcode);
+
+        if (!match) {
+            error.color = "red";
+            return res.status(401).json({message: "Invalid username or passcode"});
+        }else{
+                const token = jwt.sign({ id: user.id, userName: user.name,role:user.type},key, { expiresIn: "7d" })                 
+
+                const role=jwt.sign({ id: user.id, userName: user.name,role:user.type},key, { expiresIn: "7d" })
+                res.cookie("token", token, {
+                            httpOnly: true,
+                            secure: false,//process.env.NODE_ENV === "production",
+                            sameSite: "lax",
+                            maxAge:7 * 24 * 60 * 60 * 1000,
+                        })
+                res.cookie("role", role, {
+                            httpOnly: true,
+                            secure: false,//process.env.NODE_ENV === "production",
+                            sameSite: "lax",
+                            maxAge:7 * 24 * 60 * 60 * 1000,
+                        })
+        return res.status(200).json({
+            message: "Login successful",
+            user: user
+            
+        })
+    }
+
+    } catch (err) {
+        error.color = "red";
+        console.log(err)
+        res.status(500).json({ message: "Server error" });
+    }
+});
+
+
+
 /* =========================
    CHECK AUTH
 ========================= */
 router.get("/checkAuth", AuthMiddleware, async (req, res) => {
+    //console.log(req.userData)
   try {
-    const [rows] = await db.query(
-      "SELECT id,userName, email FROM users WHERE userName = ?",
-      [req.user.userName]
-    )
+    const role=req.userData.type;
 
-    return res.status(200).json({
+    let [rows]='';
+    if (role=='Admin') {
+       [rows] = await db.query( "SELECT id,userName,email,type FROM users WHERE userName = ?",[req.userData.userName])
+    }else{
+        [rows] = await db.query("SELECT id,name,agentId,type FROM agents WHERE name= ?", [req.userData.name])
+    }
+   
+  return res.status(200).json({
       user: rows[0],
     })
+    
   } catch (err) {
     console.error(err)
     return res.status(500).json({
@@ -100,7 +184,11 @@ router.get("/logout", AuthMiddleware, (req, res) => {
     secure: false,
     sameSite: "lax",
   })
-
+res.clearCookie("role", {
+    httpOnly: true,
+    secure: false,
+    sameSite: "lax",
+  })
   return res.status(200).json({
     message: "Logged Out Successfully",
     color: "green",

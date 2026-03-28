@@ -1,6 +1,6 @@
 export async function up(db) {
   await db.query(`
-    CREATE TABLE fToA (
+    CREATE TABLE ftoa (
       id INT AUTO_INCREMENT PRIMARY KEY,
       userId VARCHAR(255) NOT NULL,
       agentId VARCHAR(255) NOT NULL,

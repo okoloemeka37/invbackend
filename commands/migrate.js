@@ -50,6 +50,7 @@ export default async function migrate() {
 
     if (pendingMigrations.length === 0) {
       console.log('✅ Nothing to migrate.');
+      process.exit(1);
       return;
     }
 

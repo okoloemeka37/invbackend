@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import authRouter from './routes/authRouter.js'
 import fieldRouter from './routes/fieldRouter.js'
 import agentRouter from './routes/agentRouter.js'
+import recordsRouter from './routes/recordsRouter.js'
 import parameterRouter from './routes/parameterRouter.js'
 const port=process.env.PORT
 const app=express();
@@ -23,6 +24,7 @@ app.use("/api/auth/",authRouter);
 app.use("/api/field/",fieldRouter);
 app.use("/api/agent/",agentRouter);
 app.use("/api/parameter",parameterRouter);
+app.use("/api/records",recordsRouter);
 
 
 app.listen(port,()=>{

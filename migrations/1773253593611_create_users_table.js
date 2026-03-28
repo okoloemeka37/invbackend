@@ -3,6 +3,7 @@ export async function up(db) {
     CREATE TABLE users (
       id INT AUTO_INCREMENT PRIMARY KEY,
       userName VARCHAR(255) NOT NULL,
+      type VARCHAR(255) NOT NULL,
       email VARCHAR(100) UNIQUE NOT NULL,
       password VARCHAR(255),
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

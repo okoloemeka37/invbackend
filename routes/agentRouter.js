@@ -4,7 +4,6 @@ import bcrypt from "bcryptjs";
 import { AuthMiddleware } from '../Middleware/AuthMiddleware.js';
 
 const router=express.Router()
-console.log("hello")
 
 router.post("/create",AuthMiddleware,async(req,res)=>{
     
@@ -54,8 +53,8 @@ if (sert.length !==0) {
       error.name = "The name has been taken";
         return res.status(400).json(error)
 }
-
-    const [inp]=await db.query(`INSERT INTO agents(userId,agentId,name,passcode) VALUE(?,?,?,?)`,[user_id,agent_id,name,passcode]);
+const pass=await bcrypt.hash(passcode,10)
+    const [inp]=await db.query(`INSERT INTO agents(userId,type,agentId,name,passcode) VALUE(?,?,?,?,?)`,[user_id,'Agent',agent_id,name,pass]);
     return res.status(200).json({'message':"Agent Created Successfully",'color':'blue'})
 
 } catch (error) {
@@ -70,6 +69,35 @@ router.get("/get",AuthMiddleware,async(req,res)=>{
  return res.status(200).json(all);
 })
 
+router.get("/getAgentField",AuthMiddleware,async(req,res)=>{
+    const {agentId}=req.query
+    console.log(agentId)
+   
+                const [checkfield]=await db.query(`SELECT * FROM ftoa WHERE agentId=?`,[agentId]);
+              
+                if (checkfield.length !==0) {
+                    const IDs= checkfield.map((e)=>{return e.fieldId})
+                   const [fieldArray]=await db.query(`SELECT * FROM field WHERE id IN (?)`,[IDs]);
+                  
+                     return res.status(200).json({fieldArray:fieldArray});
+                }else{
+                     return res.status(200).json({fieldArray:'No Field Assigned'});
+                }
+
+})
+
+
+
+router.get("/getSingFA",AuthMiddleware, async (req,res)=>{
+
+  const {id}=req.query
+
+  const[field]=await db.query(`SELECT field.*,GROUP_CONCAT(ftoa.agentId) AS agents FROM field LEFT JOIN ftoa ON field.id = ftoa.fieldId WHERE field.id = ? GROUP BY field.id;`,[id]);
+   const [parameter]=await db.query(`SELECT name,price,parameterId FROM parameters WHERE userId=?`,[field[0]['user_id']])
+    const [records]=await db.query(`SELECT * FROM records WHERE fieldId =?`,[field[0]['id']])
+    const [agents]=await db.query(`SELECT agentId,name,id FROM agents WHERE userId =?`,[field[0]['user_id']])
+   return res.status(200).json({field,parameter,records,agents})
+})
 
 
 export default router
