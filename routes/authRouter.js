@@ -45,7 +45,7 @@ router.post("/login", async (req, res) => {
             return res.status(401).json({message: "Invalid username or password"});
         }else{
                 const token = jwt.sign({ id: user.id, userName: user.userName,role:user.type},key, { expiresIn: "7d" })
-                const role=jwt.sign({role:user.type},key, { expiresIn: "7d" })
+                
                 res.cookie("token", token, {
                             httpOnly: true,
                             secure: true,//process.env.NODE_ENV === "production",
@@ -53,12 +53,7 @@ router.post("/login", async (req, res) => {
                             maxAge:7 * 24 * 60 * 60 * 1000,
                         })
 
-                res.cookie("role", role, {
-                            httpOnly: true,
-                            secure: false,//process.env.NODE_ENV === "production",
-                            sameSite: "lax",
-                            maxAge:7 * 24 * 60 * 60 * 1000,
-                        })
+                
         return res.status(200).json({
             message: "Login successful",
             user: {

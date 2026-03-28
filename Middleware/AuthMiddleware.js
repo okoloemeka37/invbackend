@@ -6,8 +6,6 @@ const key = process.env.jsonkey;
 export const AuthMiddleware = async (req, res, next) => {
   try {
     const token = req.cookies.token;
-    const role = req.cookies.role;
-
     if (!token) {
       return res.status(401).json({ message: "No token provided" });
     }
@@ -19,7 +17,7 @@ export const AuthMiddleware = async (req, res, next) => {
 let [result]='';
    if (decoded.role== "Admin") {
       [result] = await db.query(
-      "SELECT id, userName, email FROM users WHERE userName = ?",
+      "SELECT id, userName, email,type FROM users WHERE userName = ?",
       [decoded.userName]
     );
        
