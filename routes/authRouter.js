@@ -48,8 +48,8 @@ router.post("/login", async (req, res) => {
                 const role=jwt.sign({role:user.type},key, { expiresIn: "7d" })
                 res.cookie("token", token, {
                             httpOnly: true,
-                            secure: false,//process.env.NODE_ENV === "production",
-                            sameSite: "lax",
+                            secure: true,//process.env.NODE_ENV === "production",
+                            sameSite: "none",
                             maxAge:7 * 24 * 60 * 60 * 1000,
                         })
 
