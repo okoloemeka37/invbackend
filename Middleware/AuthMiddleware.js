@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import db from "../db.js";
 
-const key = "1234r";
+const key = process.env.jsonkey;
 
 export const AuthMiddleware = async (req, res, next) => {
   try {
