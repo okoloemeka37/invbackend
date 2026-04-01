@@ -23,7 +23,7 @@ let [result]='';
        
    }else{
       [result] = await db.query(
-      "SELECT id, name,type FROM agents WHERE name = ?",
+      "SELECT id,name,type,agentId FROM agents WHERE name = ?",
       [decoded.userName]
     );
        

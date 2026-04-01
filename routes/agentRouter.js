@@ -71,17 +71,17 @@ router.get("/get",AuthMiddleware,async(req,res)=>{
 
 router.get("/getAgentField",AuthMiddleware,async(req,res)=>{
     const {agentId}=req.query
-    console.log(agentId)
+
    
-                const [checkfield]=await db.query(`SELECT * FROM ftoa WHERE agentId=?`,[agentId]);
+                const [checkfield]=await db.query(`SELECT * FROM ftoa WHERE agentId=? ORDER BY id DESC`,[agentId]);
               
                 if (checkfield.length !==0) {
                     const IDs= checkfield.map((e)=>{return e.fieldId})
-                   const [fieldArray]=await db.query(`SELECT * FROM field WHERE id IN (?)`,[IDs]);
+                   const [fieldArray]=await db.query(`SELECT * FROM field WHERE id IN (?) ORDER BY id DESC`,[IDs]);
                   
                      return res.status(200).json({fieldArray:fieldArray});
                 }else{
-                     return res.status(200).json({fieldArray:'No Field Assigned'});
+                     return res.status(200).json({fieldArray:[]});
                 }
 
 })
@@ -92,12 +92,10 @@ router.get("/getSingFA",AuthMiddleware, async (req,res)=>{
 
   const {id}=req.query
 
-  const[field]=await db.query(`SELECT field.*,GROUP_CONCAT(ftoa.agentId) AS agents FROM field LEFT JOIN ftoa ON field.id = ftoa.fieldId WHERE field.id = ? GROUP BY field.id;`,[id]);
-   const [parameter]=await db.query(`SELECT name,price,parameterId FROM parameters WHERE userId=?`,[field[0]['user_id']])
-    const [records]=await db.query(`SELECT * FROM records WHERE fieldId =?`,[field[0]['id']])
-    const [agents]=await db.query(`SELECT agentId,name,id FROM agents WHERE userId =?`,[field[0]['user_id']])
+  const[field]=await db.query(`SELECT field.*,GROUP_CONCAT(ftoa.agentId) AS agents FROM field LEFT JOIN ftoa ON field.id = ftoa.fieldId WHERE field.id = ? GROUP BY field.id ORDER BY id DESC `,[id]);
+   const [parameter]=await db.query(`SELECT name,price,parameterId FROM parameters WHERE userId=? ORDER BY id DESC`,[field[0]['user_id']])
+    const [records]=await db.query(`SELECT * FROM records WHERE fieldId =? ORDER BY id DESC`,[field[0]['id']])
+    const [agents]=await db.query(`SELECT agentId,name,id FROM agents WHERE userId =? ORDER BY id DESC`,[field[0]['user_id']])
    return res.status(200).json({field,parameter,records,agents})
 })
-
-
 export default router

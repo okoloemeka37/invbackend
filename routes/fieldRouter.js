@@ -94,4 +94,21 @@ router.post("/removeAgent",AuthMiddleware, async(req,res)=>{
 })
 
 
+
+
+////Admin Subview Invoice ID
+
+router.get("/AdminSubInv",AuthMiddleware, async (req,res) => {
+  const user_id=req.userData.id;
+  
+try {
+    const[adm]=await db.query(`SELECT Tracking_Id, COUNT(agentId) total_agent, COUNT(record_Id) AS total_records FROM records  WHERE userId = ? GROUP BY Tracking_Id;`,[user_id])
+console.log(adm)
+    return res.status(200).json(adm)
+} catch (error) {
+  console.log(error)
+  return res.status(500).json({message:"Something Went Wrong"})
+}
+})
+
 export default router;

@@ -138,7 +138,7 @@ router.post("/AgentLogin", async (req, res) => {
    CHECK AUTH
 ========================= */
 router.get("/checkAuth", AuthMiddleware, async (req, res) => {
-    //console.log(req.userData)
+  
   try {
     const role=req.userData.type;
 

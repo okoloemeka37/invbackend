@@ -4,6 +4,7 @@ export async function up(db) {
       id INT AUTO_INCREMENT PRIMARY KEY,
       fieldId VARCHAR(255) NOT NULL,
       Tracking_Id VARCHAR(255) NOT NULL,
+      user_Id VARCHAR(255) NOT NULL,
       agentId VARCHAR(255) NOT NULL,
       record_Id VARCHAR(255) NOT NULL,
       location VARCHAR(255) NOT NULL,
