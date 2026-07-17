@@ -26,6 +26,12 @@ app.use("/api/agent/",agentRouter);
 app.use("/api/parameter",parameterRouter);
 app.use("/api/records",recordsRouter);
 
+app.get("/health", (req, res) => {
+    res.json({
+        status: "ok"
+    });
+});
+
 
 app.listen(port,()=>{
     console.log(`App Running On Port ${port}`)
