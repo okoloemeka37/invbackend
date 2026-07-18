@@ -26,6 +26,9 @@ app.use("/api/field/",fieldRouter);
 app.use("/api/agent/",agentRouter);
 app.use("/api/parameter",parameterRouter);
 app.use("/api/records",recordsRouter);*/
+app.get("/", (req, res) => {
+    res.send("ROOT WORKS");
+});
 
 app.listen(port,()=>{
     console.log(`App Running On Port ${port}`)
