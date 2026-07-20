@@ -1,18 +1,19 @@
 console.log("=== NEW VERSION LOADED ===");
 
-import "dotenv/config";
-import express from 'express';
-import cors from 'cors'
-const port=process.env.PORT
-const app=express();
+//import "dotenv/config";
+//import express from 'express';
+//import cors from 'cors'
+//const port=process.env.PORT
+//const app=express();
 
 //http://localhost:3000
 
 //app.use(express.json())
 
-app.get("/health", (req, res) => {
+/*app.get("/health", (req, res) => {
     res.send("EMEKA HEALTH CHECK");
 });
+*/
 //app.use(cookieParser())
 
 /*app.use(cors({
@@ -26,10 +27,10 @@ app.use("/api/field/",fieldRouter);
 app.use("/api/agent/",agentRouter);
 app.use("/api/parameter",parameterRouter);
 app.use("/api/records",recordsRouter);*/
-app.get("/", (req, res) => {
-    res.send("ROOT WORKS");
-});
+//app.get("/", (req, res) => {
+ //   res.send("ROOT WORKS");
+//});
 
-app.listen(port,()=>{
-    console.log(`App Running On Port ${port}`)
-}) 
+//app.listen(port,()=>{
+  //  console.log(`App Running On Port ${port}`)
+//}) 
