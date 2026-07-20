@@ -1,19 +1,19 @@
 console.log("=== NEW VERSION LOADED ===");
 
 //import "dotenv/config";
-//import express from 'express';
+import express from 'express';
 //import cors from 'cors'
 //const port=process.env.PORT
-//const app=express();
-
+const app=express();
+const port=3000;
 //http://localhost:3000
 
 //app.use(express.json())
 
-/*app.get("/health", (req, res) => {
+app.get("/health", (req, res) => {
     res.send("EMEKA HEALTH CHECK");
 });
-*/
+
 //app.use(cookieParser())
 
 /*app.use(cors({
@@ -31,6 +31,6 @@ app.use("/api/records",recordsRouter);*/
  //   res.send("ROOT WORKS");
 //});
 
-//app.listen(port,()=>{
-  //  console.log(`App Running On Port ${port}`)
-//}) 
+app.listen(port,()=>{
+  console.log(`App Running On Port 3000`)
+}) 
