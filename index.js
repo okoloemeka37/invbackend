@@ -3,14 +3,8 @@ import "dotenv/config";
 const port=process.env.PORT
 const app=express();
 
-// Add /end to your health check route
-app.get("/end/health", (req, res) => {
-    res.send("EMEKA HEALTH CHECK");
-});
-
-// Update your root route as well
-app.get("/end", (req, res) => {
-    res.send("ROOT WORKS");
+app.use((req, res) => {
+    res.send(`Express received this path: ${req.url}`);
 });
 
 app.listen(port,()=>{
